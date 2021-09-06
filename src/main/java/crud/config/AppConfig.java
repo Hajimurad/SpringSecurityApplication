@@ -65,7 +65,7 @@ public class AppConfig implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 
-    // Приоритеная страница при запуске
+    // Приоритетная страница при запуске
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
