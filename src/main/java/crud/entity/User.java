@@ -68,7 +68,6 @@ public class User implements UserDetails {
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
-    //@Fetch(FetchMode.JOIN)
     @JoinTable (name = "user_roles",
             joinColumns = {@JoinColumn(name = "USER_ID")}, inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
     private Set<Role> roles;
