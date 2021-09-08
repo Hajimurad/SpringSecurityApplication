@@ -43,16 +43,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getByPhone(String phone) {
-        return userDao.getByPhone(phone);
-    }
-
-    @Override
-    public User getByUsername(String username) {
-        return userDao.getByUsername(username);
-    }
-
-    @Override
     public boolean saveUser(User user) {
         return userDao.saveUser(user);
     }
@@ -63,12 +53,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean updateUser(long id, User user) {
+    public boolean updateUser(Long id, User user) {
         return userDao.updateUser(id, user);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-            return userDao.getByUsername(name);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            return userDao.getByEmail(email);
     }
 }

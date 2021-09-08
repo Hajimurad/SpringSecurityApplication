@@ -18,12 +18,15 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse httpServletResponse,
                                         Authentication authentication) throws IOException {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
         if (roles.contains("ADMIN")) {
             httpServletResponse.sendRedirect("/admin");
             System.out.println("ADMIN is authenticated");
+
         } else if (roles.contains("USER")) {
             httpServletResponse.sendRedirect(String.format("/user", authentication.getName()));
             System.out.println("USER is authenticated");
+
         } else {
             System.out.println("Authentication unsuccessful");
             httpServletResponse.sendRedirect("/login");

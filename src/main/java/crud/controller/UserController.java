@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -46,16 +47,32 @@ public class UserController {
         return "user";
     }
 
+
+
     @GetMapping("/admin/new")
-    public String addUser(@ModelAttribute("user") User user) {
+    public String addUser(@ModelAttribute("user") User user, Model model) {
+
+        Set<Role> roles = roleService.getAllRoles();
+        model.addAttribute("roles", roles);
+        model.addAttribute("user", user);
+
         return "new";
     }
 
-    @PostMapping("/admin")
-    public String create(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
+    @PostMapping("/new")
+    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+                         @PathVariable("id") Long id, Model model) {
+        Set<Role> roles = roleService.getAllRoles();
+        model.addAttribute("roles", roles);
+
+        if (bindingResult.hasErrors()) {
+            return "new";
+        }
+        userService.updateUser(id, user);
+
         return "redirect:/admin";
     }
+
 
     @DeleteMapping("/admin/users/{id}")
     public String removeUser(@PathVariable("id") Long id) {
@@ -65,23 +82,35 @@ public class UserController {
 
     @GetMapping("/user")
     public String userPage(Principal principal, Model model) {
-        User user = userService.getByUsername(principal.getName());
+        User user = userService.getByEmail(principal.getName());
         Role role =  roleService.getByRole("USER");
         model.addAttribute("user", user);
         model.addAttribute("roles", role);
         return "user";
     }
 
-    @GetMapping("/admin/{id}/edit")
+    @GetMapping("admin/{id}/edit")
     public String editUser(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("allRoles", roleService.getAllRoles());
+        Set<Role> roles = new HashSet<>(roleService.getAllRoles());
+        model.addAttribute("roles", roles);
         model.addAttribute("user", userService.getById(id));
         return "edit";
     }
 
-    @PatchMapping("/admin/{id}")
-    public String update(@ModelAttribute("user") @Valid User user) {
-        userService.saveUser(user);
+
+    @PatchMapping("{admin/{id}/edit")
+    public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+                         @PathVariable("id") Long id,
+                         Model model) {
+        Set<Role> roles = roleService.getAllRoles();
+        model.addAttribute("roles", roles);
+        model.addAttribute("userOrig", userService.getById(id));
+
+        if (bindingResult.hasErrors()) {
+            return "edit";
+        }
+
+        userService.updateUser(id, user);
         return "redirect:/admin";
     }
 }

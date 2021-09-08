@@ -9,10 +9,8 @@ public interface UserDao {
     List<User> getAllUsers();
     List<User> getByName(String firstName, String lastName);
 
-    User getByUsername(String username);
     User getById(Long id);
     User getByEmail(String email);
-    User getByPhone(String phone);
 
     boolean saveUser(User user);
     boolean removeUser(Long id);

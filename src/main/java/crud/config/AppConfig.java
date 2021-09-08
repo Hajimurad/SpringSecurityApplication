@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -27,6 +28,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableWebMvc
+@PropertySource("classpath:application.properties")
 @EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan("crud")
 public class AppConfig implements WebMvcConfigurer {
@@ -38,7 +40,6 @@ public class AppConfig implements WebMvcConfigurer {
         this.applicationContext = applicationContext;
     }
 
-    // TL
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -63,16 +64,6 @@ public class AppConfig implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 
-    // Приоритетная страница при запуске
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("index");
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-    }
-
-    // JPA
-    // В объект DataSource мы закидываем настройки ДБ,
-    // чтобы потом передать их в SessionFactory или EntityManagerFactory
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -102,7 +93,6 @@ public class AppConfig implements WebMvcConfigurer {
         return em;
     }
 
-    // Настройки Hibernate
     public Properties getHibernateProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
